@@ -1,6 +1,8 @@
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Features from './components/Features';
+import ScreenshotShowcase from './components/ScreenshotShowcase';
+import TrustSection from './components/TrustSection';
 import HowItWorks from './components/HowItWorks';
 
 export default function Page() {
@@ -10,6 +12,8 @@ export default function Page() {
       <main id="main" className="min-h-screen bg-white">
         <Hero />
         <Features />
+        <ScreenshotShowcase />
+        <TrustSection />
         <HowItWorks />
 
         {/* Footer */}
