@@ -1,74 +1,86 @@
+'use client';
+
+import { useState } from 'react';
+
 export default function ScreenshotShowcase() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const screenshots = [
     {
-      id: 1,
-      title: 'Booking Screen',
-      description: 'PawWalk app — booking screen showing time and walker selection',
-      image: '/screenshots/booking.png',
       alt: 'PawWalk app — booking screen showing time and walker selection',
+      title: 'Book in seconds',
+      description: 'Select your dog, pick a time, and choose from vetted walkers nearby.',
     },
     {
-      id: 2,
-      title: 'Live Tracking',
-      description: 'PawWalk app — live walk tracking with map and route',
-      image: '/screenshots/tracking.png',
       alt: 'PawWalk app — live walk tracking with map and route',
+      title: 'Track live',
+      description: 'Follow your dog\'s route in real-time with GPS and photo updates.',
     },
     {
-      id: 3,
-      title: 'Walk Summary',
-      description: 'PawWalk app — photo update and walk summary with duration and notes',
-      image: '/screenshots/summary.png',
       alt: 'PawWalk app — photo update and walk summary with duration and notes',
+      title: 'Get updates',
+      description: 'Receive photos and a summary when the walk ends.',
     },
   ];
 
   return (
-    <section id="screenshots" className="bg-surface py-12 md:py-16 lg:py-20">
-      <div className="container">
-        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-night-slate mb-4">
+    <section className="bg-surface py-12 md:py-16 lg:py-20">
+      <div className="container max-w-4xl">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-night-slate text-center mb-12 md:mb-16">
           See it in action
         </h2>
-        <p className="text-base md:text-lg text-text-muted mb-12 md:mb-16 max-w-2xl">
-          From booking to tracking, PawWalk makes dog walking simple and transparent.
-        </p>
 
-        {/* Screenshot Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {screenshots.map((screenshot) => (
-            <div
-              key={screenshot.id}
-              className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-150"
-            >
-              {/* Image Container */}
-              <div className="relative bg-sand aspect-[9/16] overflow-hidden flex items-center justify-center">
-                <img
-                  src={screenshot.image}
-                  alt={screenshot.alt}
-                  width={280}
-                  height={560}
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Caption */}
-              <div className="p-4 md:p-6">
-                <h3 className="text-lg font-semibold text-night-slate mb-2">
-                  {screenshot.title}
-                </h3>
-                <p className="text-sm text-text-muted leading-relaxed">
-                  {screenshot.description}
-                </p>
+        <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+          {/* Mock Device Frame */}
+          <div className="flex-shrink-0 w-full lg:w-1/2">
+            <div className="relative mx-auto max-w-xs">
+              {/* iPhone Frame */}
+              <div className="bg-night-slate rounded-3xl p-3 shadow-lg">
+                <div className="bg-white rounded-2xl overflow-hidden aspect-[9/19.5] flex items-center justify-center bg-gradient-to-br from-sand to-white">
+                  {/* Placeholder for screenshot */}
+                  <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
+                    <div className="text-4xl mb-4">📱</div>
+                    <p className="text-sm text-text-muted">{screenshots[activeIndex].alt}</p>
+                  </div>
+                </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Mobile Stack Note */}
-        <p className="text-xs text-text-muted text-center mt-8 md:hidden">
-          Scroll to see all three app screens
-        </p>
+          {/* Screenshot Info and Navigation */}
+          <div className="flex-1 w-full lg:w-1/2">
+            <div className="mb-8">
+              <h3 className="text-2xl md:text-3xl font-semibold text-night-slate mb-3">
+                {screenshots[activeIndex].title}
+              </h3>
+              <p className="text-lg text-text-muted leading-relaxed">
+                {screenshots[activeIndex].description}
+              </p>
+            </div>
+
+            {/* Carousel Indicators */}
+            <div className="flex gap-3">
+              {screenshots.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`h-2 rounded-full transition-all ${
+                    index === activeIndex
+                      ? 'bg-primary-amber w-8'
+                      : 'bg-border w-2 hover:bg-text-muted'
+                  }`}
+                  aria-label={`View screenshot ${index + 1}: ${screenshots[index].title}`}
+                  aria-current={index === activeIndex ? 'true' : 'false'}
+                />
+              ))}
+            </div>
+
+            {/* Keyboard Navigation Hint */}
+            <p className="text-xs text-text-muted mt-6">
+              Use arrow keys or tap indicators to navigate screenshots
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

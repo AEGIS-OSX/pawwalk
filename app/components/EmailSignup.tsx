@@ -1,143 +1,89 @@
 'use client';
 
 import { useState } from 'react';
-import { validateEmail, getEmailErrorMessage } from '@/app/lib/validators';
 
-interface EmailSignupProps {
-  title?: string;
-  description?: string;
-  placeholder?: string;
-  buttonLabel?: string;
-  successMessage?: string;
-  errorMessage?: string;
-  privacyLink?: string;
-  onSubmit?: (email: string) => Promise<boolean>;
-}
-
-export default function EmailSignup({
-  title = 'Get updates by email',
-  description = 'We will send a confirmation email. By signing up you agree to receive occasional launch updates.',
-  placeholder = 'your@email.com',
-  buttonLabel = 'Sign up',
-  successMessage = 'Thanks, check your inbox to confirm. You will receive one confirmation email from Mailchimp.',
-  errorMessage = 'Sorry, we could not save that right now. Try again in a moment.',
-  privacyLink = '/privacy',
-  onSubmit,
-}: EmailSignupProps) {
+export default function EmailSignup() {
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
-    // Clear error when user starts typing
-    if (emailError && value) {
-      setEmailError('');
-    }
-  };
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setStatus('loading');
+    setErrorMessage('');
 
-    // Validate email format
-    const validationError = getEmailErrorMessage(email);
-    if (validationError) {
-      setEmailError(validationError);
+    // Validate email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setStatus('error');
+      setErrorMessage('Please enter a valid email address.');
       return;
     }
 
-    setIsSubmitting(true);
-    setEmailError('');
-    setSubmitError('');
-
     try {
-      // Call the provided onSubmit handler or use default placeholder
-      let success = false;
-      if (onSubmit) {
-        success = await onSubmit(email);
-      } else {
-        // Placeholder: in production, this would call /api/subscribe or similar
-        // For static export, we just simulate success
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        success = true;
+      // TODO: Wire to Mailchimp API
+      // POST to /api/subscribe with { email }
+      // Mailchimp list: "pawwalk_launch"
+      // Double opt-in enabled
+      // API key stored in environment variable: MAILCHIMP_API_KEY
+      // List ID stored in environment variable: MAILCHIMP_LIST_ID
+      // Example endpoint: https://[dc].api.mailchimp.com/3.0/lists/[list_id]/members
+      
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to subscribe');
       }
 
-      if (success) {
-        setIsSubmitted(true);
-        setEmail('');
-        // Auto-dismiss success message after 5 seconds
-        setTimeout(() => setIsSubmitted(false), 5000);
-      } else {
-        setSubmitError(errorMessage);
-      }
+      setStatus('success');
+      setEmail('');
+      
+      // TODO: Track event in Plausible or GA4
+      // Example: gtag('event', 'email_signup', { source: 'hero' });
     } catch (error) {
-      setSubmitError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
+      setStatus('error');
+      setErrorMessage('Sorry, we could not save that right now. Try again in a moment.');
     }
   };
 
   return (
-    <div className="bg-surface rounded-lg p-6 md:p-8">
-      <h2 className="text-lg md:text-xl font-semibold text-night-slate mb-2">
-        {title}
-      </h2>
-      <p className="text-sm text-text-muted mb-4">
-        {description}{' '}
-        <a href={privacyLink} className="text-accent-pine hover:text-primary-amber underline">
-          Privacy
-        </a>
-      </p>
-
-      {isSubmitted ? (
-        <div
-          className="bg-success/10 border border-success rounded-lg p-4 text-sm text-success"
-          role="status"
-          aria-live="polite"
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+        <input
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={status === 'loading'}
+          className="flex-1 px-4 py-3 md:py-4 border border-border rounded-lg bg-white text-night-slate placeholder-text-muted focus:outline-none focus:border-accent-pine focus:ring-2 focus:ring-accent-pine/20 transition-all disabled:opacity-50"
+          aria-label="Email address"
+          required
+        />
+        <button
+          type="submit"
+          disabled={status === 'loading'}
+          className="btn-primary px-6 md:px-8 py-3 md:py-4 font-semibold rounded-lg whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          aria-busy={status === 'loading'}
         >
-          {successMessage}
+          {status === 'loading' ? 'Signing up...' : 'Sign up'}
+        </button>
+      </form>
+
+      {/* Status Messages */}
+      {status === 'success' && (
+        <div className="mt-4 p-4 bg-success/10 border border-success rounded-lg text-success text-sm" role="status">
+          <p className="font-semibold mb-1">Thanks, check your inbox to confirm.</p>
+          <p>You will receive one confirmation email from Mailchimp.</p>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1">
-            <input
-              type="email"
-              placeholder={placeholder}
-              value={email}
-              onChange={handleEmailChange}
-              disabled={isSubmitting}
-              className="w-full px-4 py-3 rounded-lg border border-border bg-white text-night-slate placeholder-text-muted focus:outline-none focus:border-accent-pine focus:ring-2 focus:ring-accent-pine/20 disabled:opacity-50 transition-colors"
-              aria-label="Email address"
-              aria-invalid={emailError ? 'true' : 'false'}
-              aria-describedby={emailError ? 'email-error' : undefined}
-            />
-            {emailError && (
-              <p id="email-error" className="text-sm text-error mt-2">
-                {emailError}
-              </p>
-            )}
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="btn-primary whitespace-nowrap disabled:opacity-50"
-            aria-busy={isSubmitting}
-          >
-            {isSubmitting ? 'Signing up...' : buttonLabel}
-          </button>
-        </form>
       )}
 
-      {submitError && (
-        <div
-          className="bg-error/10 border border-error rounded-lg p-4 text-sm text-error mt-3"
-          role="alert"
-          aria-live="polite"
-        >
-          {submitError}
+      {status === 'error' && (
+        <div className="mt-4 p-4 bg-error/10 border border-error rounded-lg text-error text-sm" role="alert">
+          {errorMessage}
         </div>
       )}
     </div>

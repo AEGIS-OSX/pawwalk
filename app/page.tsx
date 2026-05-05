@@ -22,10 +22,12 @@ export default function Page() {
         {/* Download CTA Section */}
         <section className="bg-white py-12 md:py-16 lg:py-20 border-t border-border">
           <div className="container max-w-2xl">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-night-slate mb-8">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-night-slate text-center mb-8 md:mb-10">
               Ready to get started?
             </h2>
-            <DownloadCTA />
+            <div className="flex justify-center">
+              <DownloadCTA />
+            </div>
           </div>
         </section>
 
