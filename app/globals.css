@@ -1,3 +1,286 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Design Tokens: Color Palette */
+:root {
+  /* Brand Colors */
+  --color-primary-amber: #FF8A3D;
+  --color-accent-pine: #0E6B59;
+  --color-night-slate: #0F1724;
+  --color-sand: #F7EDE2;
+  --color-white: #FFFFFF;
+
+  /* Semantic Colors - Light Mode */
+  --color-background: #FFFFFF;
+  --color-surface: #F7EDE2;
+  --color-text: #0F1724;
+  --color-text-muted: #6B7280;
+  --color-border: #E6E3DF;
+  --color-success: #0E6B59;
+  --color-error: #D64545;
+  --color-warning: #FFB66B;
+  --color-focus-ring: #0E6B59;
+
+  /* Typography Scale */
+  --font-display: 'Domaine Display', 'Geist Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Geist Sans', 'GT America', -apple-system, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Berkeley Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+
+  /* Font Sizes and Line Heights */
+  --text-xxs-size: 12px;
+  --text-xxs-line-height: 16px;
+  --text-xs-size: 14px;
+  --text-xs-line-height: 20px;
+  --text-base-size: 16px;
+  --text-base-line-height: 24px;
+  --text-lg-size: 18px;
+  --text-lg-line-height: 24px;
+  --text-h3-size: 22px;
+  --text-h3-line-height: 28px;
+  --text-h2-size: 26px;
+  --text-h2-line-height: 32px;
+  --text-h1-size: 36px;
+  --text-h1-line-height: 42px;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing Scale (8px base unit) */
+  --sp-0: 0px;
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-5: 40px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+  --sp-12: 96px;
+  --sp-16: 128px;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Mode Semantic Colors */
+    --color-background: #0B0D10;
+    --color-surface: #121212;
+    --color-text: #E8E8E8;
+    --color-text-muted: #9AA0A6;
+    --color-border: #262626;
+    --color-success: #1EA182;
+    --color-error: #FF6B6B;
+    --color-warning: #FFB66B;
+    --color-focus-ring: #1EA182;
+  }
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base-size);
+  line-height: var(--text-base-line-height);
+  color: var(--color-text);
+  background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1 {
+  font-family: var(--font-display);
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line-height);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line-height);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+h3 {
+  font-family: var(--font-body);
+  font-size: var(--text-h3-size);
+  line-height: var(--text-h3-line-height);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+/* Links */
+a {
+  color: var(--color-accent-pine);
+  text-decoration: none;
+  transition: color 150ms ease-out;
+}
+
+a:hover {
+  color: var(--color-primary-amber);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Buttons */
+button {
+  font-family: var(--font-body);
+  font-size: var(--text-base-size);
+  font-weight: var(--font-weight-semibold);
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease-out;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Primary Button */
+.btn-primary {
+  background-color: var(--color-primary-amber);
+  color: var(--color-night-slate);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #FF7A1F;
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* Secondary Button */
+.btn-secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-border);
+}
+
+/* Form Elements */
+input,
+textarea {
+  font-family: var(--font-body);
+  font-size: var(--text-base-size);
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: border-color 150ms ease-out;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent-pine);
+  box-shadow: 0 0 0 3px rgba(14, 107, 89, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Utility Classes */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--sp-2);
+  padding-right: var(--sp-2);
+}
+
+@media (min-width: 480px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 960px;
+    padding-left: var(--sp-3);
+    padding-right: var(--sp-3);
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Skip to main content link */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary-amber);
+  color: var(--color-night-slate);
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
